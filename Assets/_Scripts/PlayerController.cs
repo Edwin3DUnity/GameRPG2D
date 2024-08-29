@@ -13,36 +13,49 @@ public class PlayerController : MonoBehaviour
     private const string AXIS_V = "Vertical";
 
     private Animator _animator;
-    
+  [SerializeField]  private bool walking = false;
+    public Vector2 lastmovement = Vector2.zero;
+
+
+    private const string WALKING = "Walking";
+    private const string LAST_H = "LastH";
+    private const string LAST_V = "LastV";
     
     
     
     // Start is called before the first frame update
     void Start()
     {
+        
         _animator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
+        
         MovimientoPersnaje();
+        
     }
 
     private void MovimientoPersnaje()
     {
-        
+        walking = false;
         //S = V*t
         if (Mathf.Abs(Input.GetAxisRaw(AXIS_H)) > 0.2f)
         {
             Vector3 translation = new Vector3(Input.GetAxisRaw(AXIS_H) * speed * Time.deltaTime,0,0);
             this.transform.Translate(translation);
+            walking = true;
+            lastmovement = new Vector2(Input.GetAxisRaw(AXIS_H),0);
         }
 
         if (Mathf.Abs(Input.GetAxisRaw(AXIS_V)) > 0.2f)
         {
             Vector3 translation = new Vector3(0,Input.GetAxisRaw(AXIS_V) * speed * Time.deltaTime, 0);
             this.transform.Translate(translation);
+            walking = true;
+            lastmovement = new Vector2(0, Input.GetAxisRaw(AXIS_V));
         }
     }
 
@@ -50,5 +63,9 @@ public class PlayerController : MonoBehaviour
     {
         _animator.SetFloat(AXIS_H, Input.GetAxisRaw(AXIS_H));
         _animator.SetFloat(AXIS_V, Input.GetAxisRaw(AXIS_V));
+        _animator.SetBool(WALKING, walking);
+        _animator.SetFloat(LAST_H, lastmovement.x);
+        _animator.SetFloat(LAST_V, lastmovement.y);
+        
     }
 }
